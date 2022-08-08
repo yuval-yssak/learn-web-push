@@ -6,14 +6,16 @@ if ("serviceWorker" in navigator) {
   console.log("no service worker option available.");
 }
 
-const $installButton = document.querySelector(".install-app");
+const $installButton = document.querySelector(".btn__install-app");
 
 // hide install button
 console.log("hide button");
 $installButton.style.display = "none";
 
 let deferredInstallEvent = null;
-window.addEventListener("beforeinstallprompt", (e) => {
+window.addEventListener("beforeinstallprompt", onPromptInstall);
+
+function onPromptInstall(e) {
   console.log("BEFORE INSTALL PROMPT", e);
   e.preventDefault();
 
@@ -33,4 +35,4 @@ window.addEventListener("beforeinstallprompt", (e) => {
       });
     }
   });
-});
+}
