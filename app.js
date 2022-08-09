@@ -50,6 +50,18 @@ function enableNotifications() {
             body: "Allowed notification2222s",
             icon: "/logo-192.png",
             badge: "/logo-96.png",
+            actions: [
+              {
+                action: "confirm-slug",
+                title: "Confirm",
+                icon: "/logo-192.png",
+              },
+              {
+                action: "cancel-slug",
+                title: "Cancel",
+                icon: "/logo-192.png",
+              },
+            ],
           });
         });
       }
