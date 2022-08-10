@@ -13,8 +13,23 @@ self.addEventListener("fetch", (event) => {
 
 // respond to notification actions
 self.addEventListener("notificationclick", (e) => {
-  console.log(e);
-  if (e.action === "cancel-slug") e.notification.close();
+  console.log("clicked on notification", e);
+  e.waitUntil(
+    (async () => {
+      const windowClients = await self.clients.matchAll();
+
+      const windowClient = windowClients.find(
+        (w) => w.visibilityState === "visible"
+      );
+      if (windowClient) {
+        await windowClient.navigate(e.notification.data.url);
+        await windowClient.focus();
+      } else {
+        await self.clients.openWindow(e.notification.data.url);
+      }
+    })()
+  );
+  e.notification.close();
 });
 
 // respond to user clearing notification
@@ -26,17 +41,25 @@ self.addEventListener("notificationclose", (e) => {
 self.addEventListener("push", (e) => {
   console.log("push notification received", e);
 
+  var data;
   if (e.data) {
-    const data = JSON.parse(e.data.text());
-
-    const options = {
-      body: data.content,
-      icon: "/logo-192.png",
-      badge: "/logo-96.png",
-    };
-
-    e.waitUntil(self.registration.showNotification(data.title, options));
+    data = JSON.parse(e.data.text());
   } else {
-    console.error("no data in event", e);
+    data = {
+      title: "new message from server",
+      content: "unknown content",
+      openUrl: "/",
+    };
   }
+
+  console.log({ data });
+
+  const options = {
+    body: data.content,
+    icon: "/logo-192.png",
+    badge: "/logo-96.png",
+    data: { url: data.openUrl },
+  };
+
+  e.waitUntil(self.registration.showNotification(data.title, options));
 });

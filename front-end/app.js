@@ -99,6 +99,8 @@ async function configurePushSubscription(swReg) {
     else alert("could not push subscription to server");
   } else {
     // we have a subscription
+
+    console.log("subscription already exists");
   }
 }
 

@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import webPush from "web-push";
+import * as webPush from "web-push";
 const app = express();
 
 app.use(express.json());
@@ -21,14 +21,29 @@ app.get("/push", async (_, res) => {
     "fOnmhJk_p-owQHBrUC2U7bkqq-AJ48SNJcJzoM1iW6Y"
   );
 
-  subscriptions.forEach(async (sub) => {
-    const pushResult = await webPush.sendNotification(
-      sub,
-      JSON.stringify({ title: "New Post", content: "hello" })
-    );
-  });
+  for (let i = subscriptions.length - 1; i >= 0; i--) {
+    try {
+      const pushResult = await webPush.sendNotification(
+        subscriptions[i],
+        JSON.stringify({
+          title: "New Post",
+          content: "hello",
+          openUrl: "https://bbc.com",
+        })
+      );
+    } catch (err) {
+      const typedError = err as webPush.WebPushError;
 
-  res.send("sent");
+      if (typedError.statusCode === 410) {
+        // client removed
+        subscriptions.splice(i, 1);
+      } else {
+        throw err;
+      }
+    }
+  }
+
+  res.send(`sent to ${subscriptions.length} subscribers`);
 });
 
 app.listen(4000, () => console.log("listening on 4000"));
