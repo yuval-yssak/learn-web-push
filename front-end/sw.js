@@ -21,3 +21,22 @@ self.addEventListener("notificationclick", (e) => {
 self.addEventListener("notificationclose", (e) => {
   console.log("notification closed", e);
 });
+
+// listen to push notifications
+self.addEventListener("push", (e) => {
+  console.log("push notification received", e);
+
+  if (e.data) {
+    const data = JSON.parse(e.data.text());
+
+    const options = {
+      body: data.content,
+      icon: "/logo-192.png",
+      badge: "/logo-96.png",
+    };
+
+    e.waitUntil(self.registration.showNotification(data.title, options));
+  } else {
+    console.error("no data in event", e);
+  }
+});
