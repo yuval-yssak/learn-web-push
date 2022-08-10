@@ -1,0 +1,15 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@tsconfig/node12": "^1.0.11",
+    "@types/node": "^18.6.5",
+    "tsc": "^2.0.4",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "web-push": "^3.5.0"
+  }
+}
